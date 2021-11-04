@@ -13,7 +13,6 @@ for await (const conn of server) {
 }
 
 async function handleRequest(request: Deno.RequestEvent) {
-    console.log(request)
     const method = request.request.method
     const pathname = new URL(request.request.url).pathname
     switch (method) {
