@@ -20,9 +20,7 @@ async function handleRequest(request: Deno.RequestEvent) {
             if (pathname === "/") {
                 request.respondWith(
                     new Response (
-                        new TextDecoder().decode(
-                            await Deno.readFile('./index.html')
-                        ),
+                        await Deno.readFile('./index.html'),
                         {
                             status: Status.OK,
                             headers: {
@@ -36,9 +34,7 @@ async function handleRequest(request: Deno.RequestEvent) {
                 if (/scripts\/.*[tj]s/.test(pathname)) {
                     request.respondWith(
                         new Response (
-                            new TextDecoder().decode(
-                                await Deno.readFile('.' + pathname)
-                            ),
+                            await Deno.readFile('.' + pathname),
                             {
                                 status: Status.OK,
                                 headers: {
@@ -47,9 +43,22 @@ async function handleRequest(request: Deno.RequestEvent) {
                             }
                         )
                     )
+                } else if (/assets\/.*.png/.test(pathname)) {
+                    request.respondWith(
+                        new Response (
+                            await Deno.readFile('.' + pathname),
+                            {
+                                status: Status.OK,
+                                headers: {
+                                    "content-type": "image/png"
+                                },
+                            }
+                        )
+                    )
                 } else {
                     request.respondWith(
-                        new Response ("GET Not found", { status: Status.NotFound })
+                        new Response ("Path Not accessible",
+                                      { status: Status.NotFound })
                     )
                 }
             }
