@@ -1,0 +1,41 @@
+* objects
+
+** wall (borders inclusive)
+
+** sprites
+
+*** tank
+
+- shoot:
+
+  - bullet born, set coord & velocity
+
+- move:
+
+  - set velocity
+
+    
+*** bullet
+
+* blit
+
+- clear, draw & render
+
+* refresh
+
+** check collide
+
+- bullet & wall
+
+  - reset velocity (bounce)
+
+- tank & wall
+
+  - reset velocity (friction)
+
+- tank & bullet
+
+  - del bullet
+  - del tank
+  - delayed game ending
+
