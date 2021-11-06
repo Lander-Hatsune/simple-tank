@@ -6,7 +6,8 @@ import { tank_list,
          genMap,
          newTank,
          newBullet } from "./objs.js"
-import { step } from "./dynamics.js"
+import { collide,
+         step } from "./dynamics.js"
 
 function blit() {
     drawMap()
@@ -14,7 +15,7 @@ function blit() {
 }
 
 function refresh() {
-    /* collision detection */
+    collide()    
     step()
 }
 
@@ -26,8 +27,7 @@ function refresh() {
     newTank("assets/tank2.png")
     newBullet(tank_list[1])
 
-    //blit()
-    setInterval(blit, 1000 / Constants.FPS)
-    setInterval(refresh, 1000 / Constants.TICK_RATE)
+    //setInterval(blit, 1000 / Constants.FPS)
+    //setInterval(refresh, 1000 / Constants.TICK_RATE)
 })()
 

@@ -1,13 +1,14 @@
 export const Constants = {
     FPS: 60,
     TPS: 100, // ticks per second
-    CANVAS_HEIGHT: 800,
-    WALL_WIDTH: 8,
-    BULLET_VELOCITY: 1,
-    BULLET_RADIUS: 7,
-    TANK_WIDTH: 60,
-    TANK_HEIGHT: 96,
-    TANK_BODY_BIAS: [32, 48],
+    CANVAS_WIDTH: 1024,
+    CANVAS_HEIGHT: 768,
+    WALL_WIDTH: 1,
+    BULLET_VELOCITY: 0.1,
+    BULLET_RADIUS: 0.5,
+    TANK_WIDTH: 3.2,
+    TANK_HEIGHT: 5.4,
+    TANK_BODY_BIAS: [1.7, 2.7],
 }
 
 const cyrb53 = function(str, seed = 0) {

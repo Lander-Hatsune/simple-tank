@@ -21,8 +21,9 @@ function drawCircle(x, y, r, c) {
     ctx.fill()
 }
 
-export let block_size = undefined
+export let scale = undefined
 
+// replace within drawSprites
 function drawWall(row, col, type) {
     const ww = Constants.WALL_WIDTH;
     if (type === "vert") {
@@ -48,9 +49,10 @@ function drawWall(row, col, type) {
 }
 
 export function drawMap() {
-    block_size = Constants.CANVAS_HEIGHT / map_size.height
-    cvs.height = Constants.CANVAS_HEIGHT
-    cvs.width = block_size * map_size.width
+    // reconsider scale setting, leave margin
+    scale = Constants.CANVAS_HEIGHT / map_size.height
+    // use ctx.translate to set origin for arena
+    // draw gray background
     for (let row = 0; row < map.vert.length; row += 1) 
         for (let col = 0; col < map.vert[row].length; col += 1) 
             if (map.vert[row][col] != 0) 
@@ -61,6 +63,7 @@ export function drawMap() {
                 drawWall(row, col, "horiz")
 }
 
+// add scale factor
 function drawBullet(x, y) {
     drawCircle(x, y, Constants.BULLET_RADIUS)
 }

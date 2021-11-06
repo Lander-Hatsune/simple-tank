@@ -22,9 +22,10 @@ export function genMap() {
                 [1, 1, 1, 1, 1]],
     }
     map_size = {
-        height: 5,
-        width: 5,
+        height: 10 * 5 + 1,
+        width: 10 * 5 + 1,
     }
+    // add all walls to sprite_map
 }
 
 export function newBullet(tank_hash) {
@@ -35,7 +36,8 @@ export function newBullet(tank_hash) {
         vx: Math.sin(tank.angle) * Constants.BULLET_VELOCITY,
         vy: -Math.cos(tank.angle) * Constants.BULLET_VELOCITY,
         type: "bullet",
-        ttl: 1000
+        source: tank_hash,
+        ttl: 1000,
     }
     const hash = objHash(bullet)
     sprite_map.set(hash, bullet)
@@ -59,3 +61,8 @@ export function newTank(src) {
     sprite_map.set(hash, tank)
     tank_list.push(hash)
 }
+
+export function newWall(row, col, type) {
+    
+}
+
