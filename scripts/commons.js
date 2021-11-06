@@ -7,6 +7,7 @@ export const Constants = {
     BULLET_RADIUS: 7,
     TANK_WIDTH: 60,
     TANK_HEIGHT: 96,
+    TANK_BODY_BIAS: [32, 48],
 }
 
 const cyrb53 = function(str, seed = 0) {

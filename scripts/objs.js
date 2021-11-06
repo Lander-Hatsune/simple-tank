@@ -1,15 +1,37 @@
 import { Constants,
          objHash } from "./commons.js"
 
-export let sprite_map = new Map()
-export let tank_list = []
-export let bullet_list = []
+export const sprite_map = new Map()
+export const tank_list = []
+export const bullet_list = []
+export let map = undefined
+export let map_size = undefined
 
-export function shoot(tank_hash) {
+export function genMap() {
+    map = {
+        vert: [[1, 0, 1, 1, 0, 1],
+               [1, 1, 0, 0, 1, 1],
+               [1, 0, 0, 0, 0, 1],
+               [1, 0, 0, 0, 1, 1],
+               [1, 0, 0, 1, 0, 1]],
+        horiz: [[1, 1, 1, 1, 1],
+                [0, 1, 0, 1, 0],
+                [1, 0, 0, 0, 1],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 1, 0],
+                [1, 1, 1, 1, 1]],
+    }
+    map_size = {
+        height: 5,
+        width: 5,
+    }
+}
+
+export function newBullet(tank_hash) {
     const tank = sprite_map.get(tank_hash)
     const bullet = {
-        x: tank.x,
-        y: tank.y,
+        x: tank.x + Math.sin(tank.angle) * Constants.TANK_BODY_BIAS[0],
+        y: tank.y + -Math.cos(tank.angle) * Constants.TANK_BODY_BIAS[0],
         vx: Math.sin(tank.angle) * Constants.BULLET_VELOCITY,
         vy: -Math.cos(tank.angle) * Constants.BULLET_VELOCITY,
         type: "bullet",
@@ -20,7 +42,7 @@ export function shoot(tank_hash) {
     bullet_list.push(hash)
 }
 
-export function addPlayer(src) {
+export function newTank(src) {
     const img = new Image()
     img.src = src
     const tank = {
@@ -37,12 +59,3 @@ export function addPlayer(src) {
     sprite_map.set(hash, tank)
     tank_list.push(hash)
 }
-
-export function step() {
-    for (const entry of sprite_map) {
-        const sprite = entry[1]
-        sprite.x += sprite.vx
-        sprite.y += sprite.vy
-    }
-}
-

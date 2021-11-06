@@ -1,8 +1,8 @@
 import { Constants } from "./commons.js"
 import { Colors } from "./colors.js"
 import { sprite_map,
-         tank_list,
-         bullet_list } from "./objs.js"
+         map,
+         map_size } from "./objs.js"
 
 
 const cvs = document.getElementById("cvs")
@@ -22,29 +22,6 @@ function drawCircle(x, y, r, c) {
 }
 
 export let block_size = undefined
-export let map = undefined
-export let map_size = undefined
-
-export function genMap() {
-    map = {
-        vert: [[1, 0, 1, 1, 0, 1],
-               [1, 1, 0, 0, 1, 1],
-               [1, 0, 0, 0, 0, 1],
-               [1, 0, 0, 0, 1, 1],
-               [1, 0, 0, 1, 0, 1]],
-        horiz: [[1, 1, 1, 1, 1],
-                [0, 1, 0, 1, 0],
-                [1, 0, 0, 0, 1],
-                [0, 0, 0, 0, 1],
-                [0, 0, 0, 1, 0],
-                [1, 1, 1, 1, 1]],
-    }
-    map_size = {
-        height: 5,
-        width: 5,
-    }
-    block_size = Constants.CANVAS_HEIGHT / map_size.height
-}
 
 function drawWall(row, col, type) {
     const ww = Constants.WALL_WIDTH;
@@ -71,6 +48,7 @@ function drawWall(row, col, type) {
 }
 
 export function drawMap() {
+    block_size = Constants.CANVAS_HEIGHT / map_size.height
     cvs.height = Constants.CANVAS_HEIGHT
     cvs.width = block_size * map_size.width
     for (let row = 0; row < map.vert.length; row += 1) 

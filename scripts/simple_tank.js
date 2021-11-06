@@ -1,12 +1,12 @@
 import { Constants } from "./commons.js"
-import { genMap,
-         drawMap,
+import { drawMap,
          drawSprites,
        } from "./draw.js"
 import { tank_list,
-         shoot,
-         addPlayer,
-         step } from "./objs.js"
+         genMap,
+         newTank,
+         newBullet } from "./objs.js"
+import { step } from "./dynamics.js"
 
 function blit() {
     drawMap()
@@ -21,10 +21,10 @@ function refresh() {
 (function() {
     genMap()
 
-    addPlayer("assets/tank1.png")
-    shoot(tank_list[0])
-    addPlayer("assets/tank2.png")
-    shoot(tank_list[1])
+    newTank("assets/tank1.png")
+    newBullet(tank_list[0])
+    newTank("assets/tank2.png")
+    newBullet(tank_list[1])
 
     //blit()
     setInterval(blit, 1000 / Constants.FPS)

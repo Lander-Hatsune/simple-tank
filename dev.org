@@ -1,29 +1,42 @@
 * objects
 
-** wall (borders inclusive)
+Static definitions.
+
+** walls (borders inclusive)
 
 ** sprites
 
 *** tank
 
-- shoot:
+- addPlayer
+
+  - random place, random direction
+
+- shoot
 
   - bullet born, set coord & velocity
 
-- move:
+- move
 
   - set velocity
-
     
 *** bullet
 
+set =ttl= when born
+
 * blit
+
+Draw & render one frame.
 
 - clear, draw & render
 
 * refresh
 
+Forward 1 tick.
+
 ** check collide
+
+(Static)
 
 - bullet & wall
 
@@ -39,3 +52,8 @@
   - del tank
   - delayed game ending
 
+** step
+
+Move everything by its velocity.
+
+Where the actual dynamics happen.
