@@ -1,8 +1,9 @@
-import { Constants } from "./commons.js"
-import { drawMap,
+import { Display } from "./commons.js"
+import { initCanvas,
+         blitMap,
          drawSprites,
        } from "./draw.js"
-import { tank_list,
+import { sprite_map,
          genMap,
          newTank,
          newBullet } from "./objs.js"
@@ -10,7 +11,7 @@ import { collide,
          step } from "./dynamics.js"
 
 function blit() {
-    drawMap()
+    blitMap()
     drawSprites()
 }
 
@@ -21,13 +22,16 @@ function refresh() {
 
 (function() {
     genMap()
+    initCanvas()
 
-    newTank("assets/tank1.png")
-    newBullet(tank_list[0])
-    newTank("assets/tank2.png")
-    newBullet(tank_list[1])
+    const tank1_hash = newTank("assets/tank1.png")
+    newBullet(tank1_hash)
+    const tank2_hash = newTank("assets/tank2.png")
+    newBullet(tank2_hash)
 
-    //setInterval(blit, 1000 / Constants.FPS)
-    //setInterval(refresh, 1000 / Constants.TICK_RATE)
+    console.log(sprite_map)
+
+    setInterval(blit, 1000 / Display.FPS)
+    setInterval(refresh, 1000 / Display.TPS)
 })()
 
