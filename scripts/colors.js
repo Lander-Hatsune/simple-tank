@@ -1,6 +1,6 @@
 export const Colors = {
-    border: '#000',
-    panel: '#FFF',
-    tank: ["#A33", "#3A3"],
+    border: "#4D4D4D",
+    background: "#E6E6E6",
+    bullet: "#000000",
 }
 

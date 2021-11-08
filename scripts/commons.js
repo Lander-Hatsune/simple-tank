@@ -1,14 +1,24 @@
-export const Constants = {
+export const Display = {
     FPS: 60,
-    TPS: 100, // ticks per second
-    CANVAS_WIDTH: 1024,
-    CANVAS_HEIGHT: 768,
-    WALL_WIDTH: 1,
-    BULLET_VELOCITY: 0.1,
+    TPS: 120, // ticks per second
+    CANVAS_WIDTH: 1920,
+    CANVAS_HEIGHT: 1080,
+    CANVAS_PADDING: 50,
+}
+
+export const Constants = {
+    BLOCK_SIZE: 10.0,
+    WALL_WIDTH: 1.0,
+    WALL_HEIGHT: 11.0,
+    BULLET_VELOCITY: 0.2,
     BULLET_RADIUS: 0.5,
-    TANK_WIDTH: 3.2,
-    TANK_HEIGHT: 5.4,
-    TANK_BODY_BIAS: [1.7, 2.7],
+    BULLET_INIT_TTL: 100000,
+    TANK_WIDTH: 3.25,
+    TANK_HEIGHT: 5.5,
+    TANK_BARREL_WIDTH: 0.75,
+    TANK_BARREL_HEIGHT: 1.0,
+    TANK_BODY_HEIGHT: 4.5,
+    TANK_BODY_BIAS: [1.75, 2.75],
 }
 
 const cyrb53 = function(str, seed = 0) {
@@ -26,5 +36,5 @@ const cyrb53 = function(str, seed = 0) {
 }
 
 export function objHash(obj) {
-    return cyrb53(JSON.stringify(obj) + Date.now())
+    return cyrb53(JSON.stringify(obj))
 }
