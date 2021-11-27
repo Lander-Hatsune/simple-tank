@@ -7,22 +7,42 @@ export const bullet_list = []
 export let map_size = undefined
 
 export function genMap() {
+    /*
     const map = [[[1, 1], [0, 1], [1, 1], [0, 1], [1, 1], [1, 0]],
                  [[1, 0], [0, 1], [0, 0], [0, 1], [0, 0], [1, 0]],
                  [[1, 1], [1, 0], [0, 1], [0, 1], [0, 0], [1, 0]],
                  [[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0]],
                  [[1, 0], [0, 1], [0, 0], [1, 0], [0, 0], [1, 0]],
                  [[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 0]]]
+    */
     map_size = {
         height: 10 * 5,
         width: 10 * 5,
     }
+    /*
     for (const [row, row_] of Object.entries(map)) {
         for (const [col, block] of Object.entries(row_)) {
             if (block[0]) newWall(row, col, "vert")
             if (block[1]) newWall(row, col, "horiz")
         }
     }
+    */
+    newWall(0, 0, 5, "vert")
+    newWall(0, 2, 1, "vert")
+    newWall(0, 4, 1, "vert")
+    newWall(0, 5, 5, "vert")
+    newWall(2, 1, 2, "vert")
+    newWall(3, 2, 1, "vert")
+    newWall(3, 3, 2, "vert")
+    newWall(3, 4, 1, "vert")
+
+    newWall(0, 0, 5, "horiz")
+    newWall(1, 1, 1, "horiz")
+    newWall(1, 3, 1, "horiz")
+    newWall(2, 0, 1, "horiz")
+    newWall(2, 2, 2, "horiz")
+    newWall(4, 1, 1, "horiz")
+    newWall(5, 0, 5, "horiz")
 }
 
 export function newBullet(tank_hash) {
@@ -46,8 +66,8 @@ export function newTank(src) {
     const img = new Image()
     img.src = src
     const tank = {
-        x: Math.random() * map_size.width,
-        y: Math.random() * map_size.height,
+        x: Math.floor(Math.random() * (map_size.width) / Constants.BLOCK_SIZE) * 10 + Constants.BLOCK_SIZE / 2,
+        y: Math.floor(Math.random() * (map_size.height) / Constants.BLOCK_SIZE) * 10 + Constants.BLOCK_SIZE / 2,
         vx: 0,
         vy: 0,
         angle: Math.random() * 2 * Math.PI,
@@ -60,15 +80,15 @@ export function newTank(src) {
     return hash
 }
 
-export function newWall(row, col, type) {
+export function newWall(row, col, span, type) {
     let w = undefined
     let h = undefined
     if (type === "vert") {
         w = Constants.WALL_WIDTH
-        h = Constants.WALL_HEIGHT
+        h = Constants.BLOCK_SIZE * span + Constants.WALL_WIDTH
     } else if (type === "horiz") {
         h = Constants.WALL_WIDTH
-        w = Constants.WALL_HEIGHT
+        w = Constants.BLOCK_SIZE * span + Constants.WALL_WIDTH
     }
     const wall = {
         x: col * Constants.BLOCK_SIZE - Constants.WALL_WIDTH / 2,
