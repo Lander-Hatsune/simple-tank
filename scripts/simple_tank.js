@@ -16,8 +16,10 @@ function blit() {
 }
 
 function refresh() {
-    collide()    
+    // resolve collision after taking a step,
+    // avoiding jittering problem. 
     step()
+    collide()
 }
 
 (function() {
@@ -26,8 +28,8 @@ function refresh() {
 
     const tank1_hash = newTank("assets/tank1.png")
     newBullet(tank1_hash)
-    const tank2_hash = newTank("assets/tank2.png")
-    newBullet(tank2_hash)
+    //const tank2_hash = newTank("assets/tank2.png")
+    //newBullet(tank2_hash)
 
     console.log(sprite_map)
 

@@ -48,8 +48,10 @@ export function genMap() {
 export function newBullet(tank_hash) {
     const tank = sprite_map.get(tank_hash)
     const bullet = {
-        x: tank.x + Math.sin(tank.angle) * Constants.TANK_BODY_BIAS[0],
-        y: tank.y + -Math.cos(tank.angle) * Constants.TANK_BODY_BIAS[0],
+        x: tank.x + Math.sin(tank.angle) * (Constants.TANK_BODY_BIAS[0] +
+                                            Constants.BULLET_RADIUS),
+        y: tank.y + -Math.cos(tank.angle) * (Constants.TANK_BODY_BIAS[0] +
+                                            Constants.BULLET_RADIUS),
         r: Constants.BULLET_RADIUS,
         vx: Math.sin(tank.angle) * Constants.BULLET_VELOCITY,
         vy: -Math.cos(tank.angle) * Constants.BULLET_VELOCITY,
