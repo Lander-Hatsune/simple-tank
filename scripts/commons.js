@@ -1,16 +1,23 @@
+/*
+  axis: +---> x (w)
+        |
+        v
+        y (h)
+ */
 export const Display = {
     FPS: 60,
-    TPS: 120, // ticks per second
+    TPS: 200, // ticks per second
     CANVAS_WIDTH: 1920,
     CANVAS_HEIGHT: 1080,
     CANVAS_PADDING: 50,
 }
 
 export const Constants = {
+    EPS: 0.001,
     BLOCK_SIZE: 10.0,
     WALL_WIDTH: 1.0,
     WALL_HEIGHT: 11.0,
-    BULLET_VELOCITY: 0.2,
+    BULLET_VELOCITY: 0.1, // 2 blocks per sec
     BULLET_RADIUS: 0.5,
     BULLET_INIT_TTL: 100000,
     TANK_WIDTH: 3.25,

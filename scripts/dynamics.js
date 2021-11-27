@@ -1,96 +1,74 @@
 import { Constants } from "./commons.js"
 import { sprite_map } from "./objs.js"
 
-function rotateAndTranslateBox(box, angle, x, y) {
-    const rot = (vec) => [vec[0] * Math.cos(angle) - vec[1] * Math.sin(angle),
-                    vec[0] * Math.sin(angle) + vec[1] * Math.cos(angle)]
-    const trans = (vec) => [vec[0] + x, vec[1] + y]
-    return [trans(rot(box[0])),
-            trans(rot(box[1])),
-            trans(rot(box[2])),
-            trans(rot(box[3]))]
-}
+const rot = (vec, angle) =>
+      [vec[0] * Math.cos(angle) - vec[1] * Math.sin(angle),
+       vec[0] * Math.sin(angle) + vec[1] * Math.cos(angle)]
 
-function barrelBox(tank) {
-    return rotateAndTranslateBox(
-        [[-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
-         [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
-         [-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
-         [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]]],
-         tank.angle, tank.x, tank.y)
-}
+const trans = (vec, x, y) => [vec[0] + x, vec[1] + y]
 
-function bodyBox(tank) {
-    return rotateAndTranslateBox(
-        [[-Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
-         [Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
-         [-Constants.TANK_WIDTH / 2, Constants.TANK_BODY_BIAS[1]],
-         [Constants.TANK_WIDTH / 2, Constants.TANK_BODY_BIAS[1]]],
-         tank.angle, tank.x, tank.y)
-}
+const rotateAndTranslateBox = (box, angle, x, y) => 
+      [trans(rot(box[0], angle), x, y),
+       trans(rot(box[1], angle), x, y),
+       trans(rot(box[2], angle), x, y),
+       trans(rot(box[3], angle), x, y)]
 
-function pointHitWall(vec, wall) {
-    let success = vec[0] >= wall.x && vec[0] <= wall.x + wall.w &&
-        vec[1] >= wall.y && vec[1] <= wall.y + wall.h
-    let type = undefined
-    if (success) {
-        type = [{dis: Math.abs(vec[0] - wall.x), type: "vert"},
-                {dis: Math.abs(vec[0] - wall.x - wall.w), type: "vert"},
-                {dis: Math.abs(vec[1] - wall.y), type: "horiz"},
-                {dis: Math.abs(vec[1] - wall.y - wall.h), type: "horiz"}].sort(
-                    ((a, b) => a.dis - b.dis))[0].type
-        return type
-    }
-    return undefined
-}
+const barrelBox = (tank) => rotateAndTranslateBox(
+    [[-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
+     [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
+     [-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
+     [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]]],
+    tank.angle, tank.x, tank.y)
 
-function boxHitWall(box, wall) {
-    for (const point of box) {
-        let result = pointHitWall(point, wall)
-        if (result)
-            return result
-    }
-    return undefined
-}
-
-function tankWallHit(tank, wall) {
-    const barrel_hit_res = boxHitWall(barrelBox(tank), wall)
-    const body_hit_res = boxHitWall(bodyBox(tank), wall)
-    if (barrel_hit_res) return barrel_hit_res
-    if (body_hit_res) return body_hit_res
-    return undefined
-}
+const bodyBox = (tank) => rotateAndTranslateBox(
+    [[-Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
+     [Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
+     [-Constants.TANK_WIDTH / 2, Constants.TANK_BODY_BIAS[1]],
+     [Constants.TANK_WIDTH / 2, Constants.TANK_BODY_BIAS[1]]],
+    tank.angle, tank.x, tank.y)
 
 export function collide() {
     // walls, tanks, bullets
-    for (let [, hitter] of sprite_map.entries()) {
-        for (let [, hittee] of sprite_map.entries()) {
-            let hit_type = undefined
-            switch (hitter.type + "&" + hittee.type) {
+    // ex. bullet as hitter, wall as hittee
+    for (const [hitterhash, hitter] of sprite_map.entries()) {
+        let new_hitter = hitter
+        let hit_prio = -1
+        for (const [hitteehash, hittee] of sprite_map.entries()) {
+            switch (hittee.type + "&" + hitter.type) {
             case "wall&tank":
-                hit_type = tankWallHit(hittee, hitter)
-                if (hit_type === "horiz")
-                    hittee.vy = 0
-                else if (hit_type === "vert")
-                    hittee.vx = 0
                 break
 
             case "wall&bullet":
-                hit_type = pointHitWall([hittee.x, hittee.y], hitter)
-                if (hit_type === "horiz")
-                    hittee.vy = -hittee.vy
-                if (hit_type === "vert")
-                    hittee.vx = -hittee.vx
+                const test_x = (hitter.x < hittee.x) ? hittee.x :
+                    (hitter.x > hittee.x + hittee.w) ? hittee.x + hittee.w :
+                    hitter.x
+                const test_y = (hitter.y < hittee.y) ? hittee.y :
+                      (hitter.y > hittee.y + hittee.h) ? hittee.y + hittee.h :
+                      hitter.y
+                const bool_hit = ((test_x - hitter.x) ** 2 +
+                                  (test_y - hitter.y) ** 2) < hitter.r ** 2
+                if (bool_hit) {
+                    const hit_prio_temp = (test_x == hitter.x ||
+                                           test_y == hitter.y) ? 1 : 0;
+                    if (hit_prio_temp > hit_prio) {
+                        hit_prio = hit_prio_temp
+                        new_hitter.vx = (test_x == hitter.x) ?
+                            hitter.vx : -hitter.vx
+                        new_hitter.vy = (test_y == hitter.y) ?
+                            hitter.vy : -hitter.vy
+                    }
+                }
                 break
 
             case "tank&bullet":
-            case "bullet&tank":
                 break
 
             default:
                 continue
             }
         }
+        if (hit_prio != -1)
+            sprite_map.set(hitterhash, new_hitter)
     }
 }
 
