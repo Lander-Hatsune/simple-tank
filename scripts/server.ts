@@ -29,9 +29,20 @@ async function handleRequest(request: Deno.RequestEvent) {
                         }
                     )
                 )
-                break
             } else { // route
-                if (/scripts\/.*[tj]s/.test(pathname)) {
+                if (/favicon.ico/.test(pathname)) {
+                    request.respondWith(
+                        new Response (
+                            await Deno.readFile('.' + pathname),
+                            {
+                                status: Status.OK,
+                                headers: {
+                                    "content-type": "image/png"
+                                },
+                            }
+                        )
+                    )
+                } else if (/scripts\/.*[tj]s/.test(pathname)) {
                     request.respondWith(
                         new Response (
                             await Deno.readFile('.' + pathname),
