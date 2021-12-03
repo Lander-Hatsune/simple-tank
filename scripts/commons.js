@@ -17,7 +17,7 @@ export const Constants = {
     BLOCK_SIZE: 10.0,
     WALL_WIDTH: 1.0,
     WALL_HEIGHT: 11.0,
-    BULLET_VELOCITY: 0.1, // 2 blocks per sec
+    BULLET_VELOCITY: 20 / Display.TPS, // 2 blocks per sec
     BULLET_RADIUS: 0.5,
     BULLET_INIT_TTL: 100000,
     TANK_WIDTH: 3.25,
@@ -26,6 +26,9 @@ export const Constants = {
     TANK_BARREL_HEIGHT: 1.0,
     TANK_BODY_HEIGHT: 4.5,
     TANK_BODY_BIAS: [1.75, 2.75],
+    TANK_VELOCITY_FORWARD: 15 / Display.TPS,
+    TANK_VELOCITY_BACKWARD: -10 / Display.TPS,
+    TANK_SPIN_VELOCITY_ANG: 5 / Display.TPS, 
 }
 
 // https://stackoverflow.com/a/52171480

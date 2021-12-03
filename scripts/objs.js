@@ -71,12 +71,12 @@ export function newTank(src) {
         id: randHash(),
         x: Math.floor(Math.random() * (map_size.width) / Constants.BLOCK_SIZE) * 10 + Constants.BLOCK_SIZE / 2,
         y: Math.floor(Math.random() * (map_size.height) / Constants.BLOCK_SIZE) * 10 + Constants.BLOCK_SIZE / 2,
-        vx: 0,
-        vy: 0,
+        v: 0,
         angle: Math.random() * 2 * Math.PI,
+        v_ang: 0,
         type: "tank",
         img: img,
-        imgsrc: src,
+        imgsrc: src
     }
     sprite_map.set(tank.id, tank)
     return tank.id
