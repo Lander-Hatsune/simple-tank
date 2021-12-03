@@ -24,11 +24,11 @@ const colli_prio = {
 export function collide() {
     // walls, tanks, bullets
     // ex. bullet as hitter, wall as hittee
-    for (const [hitterhash, hitter] of sprite_map.entries()) {
+    for (const [hitter_id, hitter] of sprite_map.entries()) {
         let new_hitter = hitter
         let hit_prio = colli_prio.NAH
         let hitter_deleted = false
-        for (const [hitteehash, hittee] of sprite_map.entries()) {
+        for (const [hittee_id, hittee] of sprite_map.entries()) {
             if (hitter_deleted) break
             switch (hittee.type + "&" + hitter.type) {
             case "wall&tank":
@@ -77,8 +77,8 @@ export function collide() {
                         const hit_prio_temp = colli_prio.TANK
                         if (hit_prio_temp > hit_prio) {
                             hitter_deleted = true
-                            sprite_map.delete(hitterhash)
-                            sprite_map.delete(hitteehash)
+                            sprite_map.delete(hitter_id)
+                            sprite_map.delete(hittee_id)
                             break
                         }
                     }
@@ -90,12 +90,12 @@ export function collide() {
             }
         }
         if (hit_prio != colli_prio.NAH)
-            sprite_map.set(hitterhash, new_hitter)
+            sprite_map.set(hitter_id, new_hitter)
     }
 }
 
 export function step() {
-    for (const [hash, sprite] of sprite_map.entries()) {
+    for (const [id, sprite] of sprite_map.entries()) {
         if (sprite.vx && sprite.vy) {
             sprite.x += sprite.vx
             sprite.y += sprite.vy
@@ -103,7 +103,7 @@ export function step() {
         if (sprite.ttl) {
             sprite.ttl -= 1
             if (sprite.ttl <= 0)
-                sprite_map.delete(hash)
+                sprite_map.delete(id)
         }
     }
 }

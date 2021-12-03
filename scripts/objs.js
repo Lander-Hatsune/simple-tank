@@ -1,5 +1,5 @@
 import { Constants,
-         objHash } from "./commons.js"
+         randHash } from "./commons.js"
 
 export const sprite_map = new Map()
 export const tank_list = []
@@ -45,9 +45,10 @@ export function genMap() {
     newWall(5, 0, 5, "horiz")
 }
 
-export function newBullet(tank_hash) {
-    const tank = sprite_map.get(tank_hash)
+export function newBullet(tank_id) {
+    const tank = sprite_map.get(tank_id)
     const bullet = {
+        id: randHash(),
         x: tank.x + Math.sin(tank.angle) * (Constants.TANK_BODY_BIAS[0] +
                                             Constants.BULLET_RADIUS),
         y: tank.y + -Math.cos(tank.angle) * (Constants.TANK_BODY_BIAS[0] +
@@ -56,18 +57,18 @@ export function newBullet(tank_hash) {
         vx: Math.sin(tank.angle) * Constants.BULLET_VELOCITY,
         vy: -Math.cos(tank.angle) * Constants.BULLET_VELOCITY,
         type: "bullet",
-        source: tank_hash,
+        source: tank_id,
         ttl: Constants.BULLET_INIT_TTL,
     }
-    const hash = objHash(bullet)
-    sprite_map.set(hash, bullet)
-    return hash
+    sprite_map.set(bullet.id, bullet)
+    return bullet.id
 }
 
 export function newTank(src) {
     const img = new Image()
     img.src = src
     const tank = {
+        id: randHash(),
         x: Math.floor(Math.random() * (map_size.width) / Constants.BLOCK_SIZE) * 10 + Constants.BLOCK_SIZE / 2,
         y: Math.floor(Math.random() * (map_size.height) / Constants.BLOCK_SIZE) * 10 + Constants.BLOCK_SIZE / 2,
         vx: 0,
@@ -77,9 +78,8 @@ export function newTank(src) {
         img: img,
         imgsrc: src,
     }
-    const hash = objHash(tank)
-    sprite_map.set(hash, tank)
-    return hash
+    sprite_map.set(tank.id, tank)
+    return tank.id
 }
 
 export function newWall(row, col, span, type) {
@@ -93,6 +93,7 @@ export function newWall(row, col, span, type) {
         w = Constants.BLOCK_SIZE * span + Constants.WALL_WIDTH
     }
     const wall = {
+        id: randHash(),
         x: col * Constants.BLOCK_SIZE - Constants.WALL_WIDTH / 2,
         y: row * Constants.BLOCK_SIZE - Constants.WALL_WIDTH / 2,
         w: w,
@@ -100,8 +101,7 @@ export function newWall(row, col, span, type) {
         type: "wall",
         wall_type: type,
     }
-    const hash = objHash(wall)
-    sprite_map.set(hash, wall)
-    return hash
+    sprite_map.set(wall.id, wall)
+    return wall.id
 }
 

@@ -26,10 +26,10 @@ function refresh() {
     genMap()
     initCanvas()
 
-    const tank1_hash = newTank("assets/tank1.png")
-    newBullet(tank1_hash)
-    //const tank2_hash = newTank("assets/tank2.png")
-    //newBullet(tank2_hash)
+    const tank1_id = newTank("assets/tank1.png")
+    newBullet(tank1_id)
+    //const tank2_id = newTank("assets/tank2.png")
+    //newBullet(tank2_id)
 
     console.log(sprite_map)
 
