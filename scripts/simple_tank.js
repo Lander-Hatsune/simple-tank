@@ -5,16 +5,9 @@ import { initCanvas,
        } from "./draw.js"
 import { sprite_map,
          genMap,
-         newTank,
-         newBullet } from "./objs.js"
+         newTank } from "./objs.js"
 import { collide,
-         step,
-         tankForward,
-         tankBackward,
-         tankStopMove,
-         tankSpinLeft,
-         tankSpinRight,
-         tankStopSpin } from "./dynamics.js"
+         step } from "./dynamics.js"
 
 function blit() {
     blitMap()
@@ -36,37 +29,40 @@ function refresh() {
 
     const tank2_id = newTank("assets/tank2.png")
 
+    const tank1 = sprite_map.get(tank1_id)
+    const tank2 = sprite_map.get(tank2_id)
+
     document.addEventListener("keydown", (event) => {
         switch (event.code) {
         case "ArrowUp":
-            tankForward(tank2_id)
+            tank2.forward = true
             break
         case "ArrowDown":
-            tankBackward(tank2_id)
+            tank2.backward = true
             break
         case "ArrowLeft":
-            tankSpinLeft(tank2_id)
+            tank2.leftspin = true
             break
         case "ArrowRight":
-            tankSpinRight(tank2_id)
+            tank2.rightspin = true
             break
         case "KeyM": // fire
-            newBullet(tank2_id)
+            tank2.fire = true
             break
         case "KeyE": // ESDF instead of WASD
-            tankForward(tank1_id)
+            tank1.forward = true
             break
         case "KeyD":
-            tankBackward(tank1_id)
+            tank1.backward = true
             break
         case "KeyS":
-            tankSpinLeft(tank1_id)
+            tank1.leftspin = true
             break
         case "KeyF":
-            tankSpinRight(tank1_id)
+            tank2.rightspin = true
             break
         case "KeyQ": // fire
-            newBullet(tank1_id)
+            tank2.fire = true
             break
         default:
         }
@@ -75,20 +71,28 @@ function refresh() {
     document.addEventListener("keyup", (event) => {
         switch (event.code) {
         case "ArrowUp":
+            tank2.forward = false
+            break
         case "ArrowDown":
-            tankStopMove(tank2_id)
+            tank2.backward = false
             break
         case "ArrowLeft":
-        case "ArrowRight":
-            tankStopSpin(tank2_id)
+            tank2.leftspin = false
             break
-        case "KeyE":
+        case "ArrowRight":
+            tank2.rightspin = false
+            break
+        case "KeyE": // ESDF instead of WASD
+            tank1.forward = false
+            break
         case "KeyD":
-            tankStopMove(tank1_id)
+            tank1.backward = false
             break
         case "KeyS":
+            tank1.leftspin = false
+            break
         case "KeyF":
-            tankStopSpin(tank1_id)
+            tank2.rightspin = false
             break
         default:
         }

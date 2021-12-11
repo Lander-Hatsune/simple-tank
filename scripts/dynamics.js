@@ -32,6 +32,7 @@ export function collide() {
             if (hitter_deleted) break
             switch (hittee.type + "&" + hitter.type) {
             case "wall&tank":
+                
                 break
 
             case "wall&bullet":
@@ -98,6 +99,10 @@ export function step() {
     for (const [id, sprite] of sprite_map.entries()) {
         switch (sprite.type) {
         case "tank":
+            sprite.v_ang = (sprite.leftspin ^ sprite.rightspin) ?
+                Constants.TANK_SPIN_VELOCITY_ANG * (sprite.leftspin ? 1 : -1) : 0
+            sprite.v = sprite.forward * Constants.TANK_VELOCITY_FORWARD +
+                sprite.backward * Constants.TANK_VELOCITY_BACKWARD
             sprite.angle += sprite.v_ang
             sprite.x += sprite.v * Math.sin(sprite.angle)
             sprite.y += -sprite.v * Math.cos(sprite.angle)

@@ -51,7 +51,7 @@ function drawTank(tank) {
     ctx.rotate(tank.angle)
     ctx.drawImage(tank.img,
                   -Constants.TANK_WIDTH / 2 * scale,
-                  -Constants.TANK_HEIGHT / 2 * scale,
+                  -Constants.TANK_HEIGHT_BIAS * scale,
                   Constants.TANK_WIDTH * scale,
                   Constants.TANK_HEIGHT * scale)
     ctx.restore()

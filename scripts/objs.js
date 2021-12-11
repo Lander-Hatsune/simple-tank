@@ -49,9 +49,9 @@ export function newBullet(tank_id) {
     const tank = sprite_map.get(tank_id)
     const bullet = {
         id: randHash(),
-        x: tank.x + Math.sin(tank.angle) * (Constants.TANK_BODY_BIAS[0] +
+        x: tank.x + Math.sin(tank.angle) * (Constants.TANK_BODY_HEIGHT / 2 +
                                             Constants.BULLET_RADIUS),
-        y: tank.y + -Math.cos(tank.angle) * (Constants.TANK_BODY_BIAS[0] +
+        y: tank.y + -Math.cos(tank.angle) * (Constants.TANK_BODY_HEIGHT / 2 +
                                             Constants.BULLET_RADIUS),
         r: Constants.BULLET_RADIUS,
         vx: Math.sin(tank.angle) * Constants.BULLET_VELOCITY,
@@ -76,7 +76,12 @@ export function newTank(src) {
         v_ang: 0,
         type: "tank",
         img: img,
-        imgsrc: src
+        imgsrc: src,
+        forward: false,
+        backward: false,
+        leftspin: false,
+        rightspin: false,
+        fire: false
     }
     sprite_map.set(tank.id, tank)
     return tank.id

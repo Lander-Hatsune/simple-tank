@@ -32,13 +32,13 @@ export const rotateAndTranslateBox = (box, angle, x, y) =>
 export const barrelBox = (tank) => rotateAndTranslateBox(
     [[-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
      [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
-     [-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
-     [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]]],
+     [-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT_BIAS],
+     [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT_BIAS]],
     tank.angle, tank.x, tank.y)
 
 export const bodyBox = (tank) => rotateAndTranslateBox(
-    [[-Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
-     [Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_BIAS[0]],
-     [Constants.TANK_WIDTH / 2, Constants.TANK_BODY_BIAS[1]],
-     [-Constants.TANK_WIDTH / 2, Constants.TANK_BODY_BIAS[1]]],
+    [[-Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
+     [Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
+     [Constants.TANK_WIDTH / 2, Constants.TANK_BODY_HEIGHT / 2],
+     [-Constants.TANK_WIDTH / 2, Constants.TANK_BODY_HEIGHT / 2]],
     tank.angle, tank.x, tank.y)
