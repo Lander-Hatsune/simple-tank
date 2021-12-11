@@ -6,8 +6,9 @@ import { initCanvas,
 import { sprite_map,
          genMap,
          newTank } from "./objs.js"
-import { collide,
-         step } from "./dynamics.js"
+import { prestep,
+         step,
+         collide } from "./dynamics.js"
 
 function blit() {
     blitMap()
@@ -16,7 +17,8 @@ function blit() {
 
 function refresh() {
     // resolve collision after taking a step,
-    // avoiding jittering problem. 
+    // avoiding jittering problem.
+    prestep()
     step()
     collide()
 }
@@ -59,10 +61,10 @@ function refresh() {
             tank1.leftspin = true
             break
         case "KeyF":
-            tank2.rightspin = true
+            tank1.rightspin = true
             break
         case "KeyQ": // fire
-            tank2.fire = true
+            tank1.fire = true
             break
         default:
         }
@@ -92,7 +94,7 @@ function refresh() {
             tank1.leftspin = false
             break
         case "KeyF":
-            tank2.rightspin = false
+            tank1.rightspin = false
             break
         default:
         }

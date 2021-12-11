@@ -23,20 +23,21 @@ export const rot = (vec, angle) =>
 
 export const trans = (vec, x, y) => [vec[0] + x, vec[1] + y]
 
-export const rotateAndTranslateBox = (box, angle, x, y) => 
-      [trans(rot(box[0], angle), x, y),
-       trans(rot(box[1], angle), x, y),
-       trans(rot(box[2], angle), x, y),
-       trans(rot(box[3], angle), x, y)]
+export const rotAndTransPoly = (poly, angle, x, y) => {
+    for (let i = 0; i < poly.length; i += 1) {
+        poly[i] = trans(rot(poly[i], angle), x, y)
+    }
+    return poly
+}
 
-export const barrelBox = (tank) => rotateAndTranslateBox(
+export const tankBox = (tank) => rotAndTransPoly(
     [[-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
      [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
      [-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT_BIAS],
      [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT_BIAS]],
     tank.angle, tank.x, tank.y)
 
-export const bodyBox = (tank) => rotateAndTranslateBox(
+export const bodyBox = (tank) => rotAndTransPoly(
     [[-Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
      [Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
      [Constants.TANK_WIDTH / 2, Constants.TANK_BODY_HEIGHT / 2],

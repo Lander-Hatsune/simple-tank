@@ -81,7 +81,8 @@ export function newTank(src) {
         backward: false,
         leftspin: false,
         rightspin: false,
-        fire: false
+        fire: false,
+        num_bullets: 5
     }
     sprite_map.set(tank.id, tank)
     return tank.id

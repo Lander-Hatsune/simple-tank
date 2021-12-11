@@ -9,10 +9,57 @@ import { add,
          scale,
          rot,
          trans,
-         rotateAndTranslateBox,
-         barrelBox,
          bodyBox } from "./maths.js"
-import { sprite_map } from "./objs.js"
+import { sprite_map,
+         newBullet } from "./objs.js"
+
+
+// handle objects and relationships
+export function prestep() {
+    for (const [id, sprite] of sprite_map.entries()) {
+        switch (sprite.type) {
+        case "tank":
+            sprite.v_ang = (sprite.leftspin ^ sprite.rightspin) ?
+                Constants.TANK_SPIN_VELOCITY_ANG * (sprite.leftspin ? 1 : -1) : 0
+            sprite.v = sprite.forward * Constants.TANK_VELOCITY_FORWARD +
+                sprite.backward * Constants.TANK_VELOCITY_BACKWARD
+            if (sprite.fire) {
+                sprite.fire = false
+                if (sprite.num_bullets) {
+                    sprite.num_bullets -= 1
+                    newBullet(id)
+                }
+            }
+            break
+        case "bullet":
+            if (sprite.ttl <= 0) {
+                sprite_map.get(sprite.source).num_bullets += 1
+                sprite_map.delete(id)
+            }
+            break
+        default:
+        }
+    }
+}
+
+// handle movements
+export function step() {
+    for (const [id, sprite] of sprite_map.entries()) {
+        switch (sprite.type) {
+        case "tank":
+            sprite.angle += sprite.v_ang
+            sprite.x += sprite.v * Math.sin(sprite.angle)
+            sprite.y += -sprite.v * Math.cos(sprite.angle)
+            break
+        case "bullet":
+            sprite.x += sprite.vx
+            sprite.y += sprite.vy
+            sprite.ttl -= 1
+            break
+        default:
+        }
+    }
+}
 
 const colli_prio = {
     NAH: -1,
@@ -21,6 +68,7 @@ const colli_prio = {
     TANK: 2
 };
 
+// handle collision & fix problems
 export function collide() {
     // walls, tanks, bullets
     // ex. bullet as hitter, wall as hittee
@@ -78,7 +126,7 @@ export function collide() {
                         const hit_prio_temp = colli_prio.TANK
                         if (hit_prio_temp > hit_prio) {
                             hitter_deleted = true
-                            sprite_map.delete(hitter_id)
+                            hitter.ttl = 0 // del bullet in prestep
                             sprite_map.delete(hittee_id)
                             break
                         }
@@ -93,62 +141,4 @@ export function collide() {
         if (hit_prio != colli_prio.NAH)
             sprite_map.set(hitter_id, new_hitter)
     }
-}
-
-export function step() {
-    for (const [id, sprite] of sprite_map.entries()) {
-        switch (sprite.type) {
-        case "tank":
-            sprite.v_ang = (sprite.leftspin ^ sprite.rightspin) ?
-                Constants.TANK_SPIN_VELOCITY_ANG * (sprite.leftspin ? 1 : -1) : 0
-            sprite.v = sprite.forward * Constants.TANK_VELOCITY_FORWARD +
-                sprite.backward * Constants.TANK_VELOCITY_BACKWARD
-            sprite.angle += sprite.v_ang
-            sprite.x += sprite.v * Math.sin(sprite.angle)
-            sprite.y += -sprite.v * Math.cos(sprite.angle)
-            break
-        case "bullet":
-            sprite.x += sprite.vx
-            sprite.y += sprite.vy
-            sprite.ttl -= 1
-            if (sprite.ttl <= 0)
-                sprite_map.delete(id)
-            break
-        default:
-        }
-    }
-}
-
-function tankMove(id, v) {
-    let tank = sprite_map.get(id)
-    tank.v = v
-}
-
-function tankSpin(id, v_ang) {
-    let tank = sprite_map.get(id)
-    tank.v_ang = v_ang
-}
-
-export function tankForward(id) {
-    tankMove(id, Constants.TANK_VELOCITY_FORWARD)
-}
-
-export function tankBackward(id) {
-    tankMove(id, Constants.TANK_VELOCITY_BACKWARD)    
-}
-
-export function tankStopMove(id) {
-    tankMove(id, 0)
-}
-
-export function tankStopSpin(id) {
-    tankSpin(id, 0)
-}
-
-export function tankSpinLeft(id) {
-    tankSpin(id, -Constants.TANK_SPIN_VELOCITY_ANG)
-}
-
-export function tankSpinRight(id) {
-    tankSpin(id, Constants.TANK_SPIN_VELOCITY_ANG)
 }
