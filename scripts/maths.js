@@ -1,4 +1,7 @@
 import { Constants } from "./commons.js"
+
+export const norm = (vec) => scale(vec, 1 / squaredLen(vec))
+
 export const add = (vec1, vec2) => [vec1[0] + vec2[0],
                                     vec1[1] + vec2[1]]
 
@@ -30,16 +33,20 @@ export const rotAndTransPoly = (poly, angle, x, y) => {
     return poly
 }
 
-export const tankBox = (tank) => rotAndTransPoly(
-    [[-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
-     [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT / 2],
-     [-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT_BIAS],
-     [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT_BIAS]],
+export const tankBodyBox = (tank) => rotAndTransPoly(
+    [[-Constants.TANK_WIDTH / 2, Constants.TANK_BODY_HEIGHT / 2],
+     [Constants.TANK_WIDTH / 2, Constants.TANK_BODY_HEIGHT / 2],
+     [Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
+     [-Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2]],
     tank.angle, tank.x, tank.y)
 
-export const bodyBox = (tank) => rotAndTransPoly(
-    [[-Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
-     [Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
+export const tankPoly = (tank) => rotAndTransPoly(
+    [[-Constants.TANK_WIDTH / 2, Constants.TANK_BODY_HEIGHT / 2],
      [Constants.TANK_WIDTH / 2, Constants.TANK_BODY_HEIGHT / 2],
-     [-Constants.TANK_WIDTH / 2, Constants.TANK_BODY_HEIGHT / 2]],
+     [Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
+     [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
+     [Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT_BIAS],
+     [-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_HEIGHT_BIAS],
+     [-Constants.TANK_BARREL_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2],
+     [-Constants.TANK_WIDTH / 2, -Constants.TANK_BODY_HEIGHT / 2]],
     tank.angle, tank.x, tank.y)

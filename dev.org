@@ -34,7 +34,20 @@ Draw & render one frame.
 
 Forward 1 tick.
 
-** check collide
+** prestep
+
+handle objects and relationships
+
+- tank: set velocity and angle velocity by movement status code
+- bullet: ~ttl <= 0~ -> del
+
+** step
+
+move everything by its velocity.
+
+this is where the actual dynamics happen.
+
+** collide
 
 (Static)
 
@@ -52,8 +65,3 @@ Forward 1 tick.
   - del tank
   - delayed game ending
 
-** step
-
-Move everything by its velocity.
-
-Where the actual dynamics happen.

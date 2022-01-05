@@ -19,8 +19,8 @@ function refresh() {
     // resolve collision after taking a step,
     // avoiding jittering problem.
     prestep()
-    step()
     collide()
+    step()
 }
 
 (function main() {
