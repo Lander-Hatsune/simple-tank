@@ -1,5 +1,7 @@
 # simple-tank
 
+[try it out!](47.93.5.8:8080)
+
 ![](screenshots/ex.png)
 
 Rewrite of TankTrouble2, a lovely flash game, gone along with flash.
