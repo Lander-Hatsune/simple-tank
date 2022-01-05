@@ -3,6 +3,13 @@
         |
         v
         y (h)
+
+  angle:
+           0
+           |
+   3pi/2 --+-- pi/2
+           |
+           pi
 */
 
 export const Display = {
@@ -18,7 +25,7 @@ export const Constants = {
     BLOCK_SIZE: 10.0,
     WALL_WIDTH: 1.0,
     WALL_HEIGHT: 11.0,
-    BULLET_VELOCITY: 20 / Display.TPS, // 2 blocks per sec
+    BULLET_V: 20 / Display.TPS, // 2 blocks per sec
     BULLET_RADIUS: 0.4,
     BULLET_INIT_TTL: 10 * Display.TPS,
     TANK_WIDTH: 3.25,
@@ -27,9 +34,10 @@ export const Constants = {
     TANK_BARREL_HEIGHT: 1.0,
     TANK_HEIGHT_BIAS: 3.25,
     TANK_BODY_HEIGHT: 4.5,
-    TANK_VELOCITY_FORWARD: 20 / Display.TPS,
-    TANK_VELOCITY_BACKWARD: -12.5 / Display.TPS,
-    TANK_SPIN_VELOCITY_ANG: -4.36 / Display.TPS, 
+    TANK_V_FORWARD: 20 / Display.TPS,
+    TANK_V_BACKWARD: -12.5 / Display.TPS,
+    TANK_V_HIT_DECAY: 1.5,
+    TANK_SPIN_V_ANG: -4.36 / Display.TPS, 
 }
 
 // https://stackoverflow.com/a/52171480

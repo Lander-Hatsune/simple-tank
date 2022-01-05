@@ -14,35 +14,6 @@ import { add,
 import { sprite_map,
          newBullet } from "./objs.js"
 
-
-// handle objects and relationships
-export function prestep() {
-    for (const [id, sprite] of sprite_map.entries()) {
-        switch (sprite.type) {
-        case "tank":
-            sprite.v_ang = (sprite.leftspin ^ sprite.rightspin) ?
-                Constants.TANK_SPIN_VELOCITY_ANG * (sprite.leftspin ? 1 : -1) : 0
-            sprite.v = sprite.forward * Constants.TANK_VELOCITY_FORWARD +
-                sprite.backward * Constants.TANK_VELOCITY_BACKWARD
-            if (sprite.fire) {
-                sprite.fire = false
-                if (sprite.num_bullets) {
-                    sprite.num_bullets -= 1
-                    newBullet(id)
-                }
-            }
-            break
-        case "bullet":
-            if (sprite.ttl <= 0) {
-                sprite_map.get(sprite.source).num_bullets += 1
-                sprite_map.delete(id)
-            }
-            break
-        default:
-        }
-    }
-}
-
 const colli_prio = {
     NAH: -1,
 
@@ -53,65 +24,139 @@ const colli_prio = {
     TANK_WALL: 0,
 };
 
+const non_hitter_list = ["wall"]
+
 // handle collision & fix problems
 export function collide() {
     // walls, tanks, bullets
     // ex. bullet as hitter, wall as hittee
     for (const [hitter_id, hitter] of sprite_map.entries()) {
-        let new_hitter = hitter
+        if (non_hitter_list.includes(hitter.type))
+            continue
+
+        let new_hitter = {...hitter} // deepcopy
+
+        if (new_hitter.type === "tank") {
+            new_hitter.v = 0
+            new_hitter.v_ang = 0
+        }
+
         let hit_prio = colli_prio.NAH // colli_prio for each hitter
         let hitter_deleted = false
         for (const [hittee_id, hittee] of sprite_map.entries()) {
             if (hitter_deleted) break
             switch (hittee.type + "&" + hitter.type) {
             case "wall&tank":
+                let hit = false
+                let v_ang_dir = 0
+                let v_dir = 0
+                let fix = [0, 0]
                 const tank_poly = tankPoly(hitter)
                 for(let i = 1; i <= 8; i++) {
                     // segment ab collides with rectangle
                     const p = tank_poly[i - 1]
                     const q = tank_poly[i % 8]
 
+                    // hit left edge of wall
                     const l_hit = add(p, scale(sub(q, p),
                                                (hittee.x - p[0]) / (q[0] - p[0])))
                     if ((l_hit[0] > p[0] ^ l_hit[0] > q[0]) &&
                         (l_hit[1] > hittee.y && l_hit[1] < hittee.y + hittee.h)) {
-                        new_hitter.v_ang = -hitter.v_ang
-                        new_hitter.v = -hitter.v
-                        hit_prio = colli_prio.TANK_WALL
+                        hit = true
+                        fix[0] = hittee.x - Math.max(p[0], q[0])
+                        if (hitter.angle > 0 &&
+                            hitter.angle < Math.PI) { // tank front hit wall
+                            v_dir = -1
+                            if (hitter.angle < Math.PI / 2)
+                                v_ang_dir = 1
+                            else v_ang_dir = -1
+                        } else {
+                            v_dir = 1
+                            if (hitter.angle < 3 / 2 * Math.PI)
+                                v_ang_dir = 1
+                            else v_ang_dir = -1
+                        }
                         break
                     }
 
+                    // top
                     const t_hit = add(p, scale(sub(q, p),
                                                (hittee.y - p[1]) / (q[1] - p[1])))
                     if ((t_hit[0] > p[0] ^ t_hit[0] > q[0]) &&
                         (t_hit[0] > hittee.x && t_hit[0] < hittee.x + hittee.w)) {
-                        new_hitter.v_ang = -hitter.v_ang
-                        new_hitter.v = -hitter.v
-                        hit_prio = colli_prio.TANK_WALL
+                        hit = true
+                        fix[1] = hittee.y - Math.max(p[1], q[1])
+                        if (hitter.angle > Math.PI / 2 &&
+                            hitter.angle < 3 / 2 * Math.PI) {
+                            v_dir = -1
+                            if (hitter.angle < Math.PI)
+                                v_ang_dir = 1
+                            else v_ang_dir = -1
+                        } else {
+                            v_dir = 1
+                            if (hitter.angle < Math.PI / 2)
+                                v_ang_dir = -1
+                            else v_ang_dir = 1
+                        }
                         break
                     }
 
+                    // right
                     const r_hit = add(p, scale(sub(q, p),
                                                (hittee.x + hittee.w - p[0]) /
                                                (q[0] - p[0])))
                     if ((r_hit[0] > p[0] ^ r_hit[0] > q[0]) &&
                         (r_hit[1] > hittee.y && r_hit[1] < hittee.y + hittee.h)) {
-                        new_hitter.v_ang = -hitter.v_ang
-                        new_hitter.v = -hitter.v
-                        hit_prio = colli_prio.TANK_WALL
+                        hit = true
+                        fix[0] = hittee.x + hittee.w - Math.min(p[0], q[0])
+                        if (hitter.angle > Math.PI &&
+                            hitter.angle < 2 * Math.PI) {
+                            v_dir = -1
+                            if (hitter.angle < 3 / 2 * Math.PI)
+                                v_ang_dir = 1
+                            else v_ang_dir = -1
+                        } else {
+                            v_dir = 1
+                            if (hitter.angle < Math.PI / 2)
+                                v_ang_dir = 1
+                            else v_ang_dir = -1
+                        }
                         break
                     }
 
+                    // bottom
                     const b_hit = add(p, scale(sub(q, p),
                                                (hittee.y + hittee.h - p[1]) /
                                                (q[1] - p[1])))
                     if ((b_hit[0] > p[0] ^ b_hit[0] > q[0]) &&
                         (b_hit[0] > hittee.x && b_hit[0] < hittee.x + hittee.w)) {
-                        new_hitter.v_ang = -hitter.v_ang
-                        new_hitter.v = -hitter.v
-                        hit_prio = colli_prio.TANK_WALL
+                        hit = true
+                        fix[1] = hittee.y + hittee.h - Math.min(p[1], q[1])
+                        if ((hitter.angle > 0 &&
+                             hitter.angle < Math.PI / 2) ||
+                            (hitter.angle > 3 / 2 * Math.PI &&
+                             hitter.angle < 2 * Math.PI)) {
+                            v_dir = -1
+                            if (hitter.angle < Math.PI)
+                                v_ang_dir = -1
+                            else v_ang_dir = 1
+                        } else {
+                            v_dir = 1
+                            if (hitter.angle < Math.PI)
+                                v_ang_dir = 1
+                            else v_ang_dir = -1
+                        }
                         break
                     }
+                }
+                if (hit) {
+                    new_hitter.v_ang = v_ang_dir *
+                        Constants.TANK_SPIN_V_ANG
+                    new_hitter.v = (v_dir > 0) ? Constants.TANK_V_FORWARD :
+                        Constants.TANK_V_BACKWARD
+                    new_hitter.v *= Constants.TANK_V_HIT_DECAY
+                    new_hitter.x += fix[0] + ((fix[0] < 0) ? -0.05 : 0.05)
+                    new_hitter.y += fix[1] + ((fix[1] < 0) ? -0.05 : 0.05)
                 }
                 break
 
@@ -157,7 +202,7 @@ export function collide() {
                         closest[0] <= Math.max(a[0], b[0]) &&
                         closest[1] >= Math.min(a[1], b[1]) &&
                         closest[1] <= Math.max(a[1], b[1])) {
-                        const hit_prio_temp = colli_prio.TANK
+                        const hit_prio_temp = colli_prio.BULLET_TANK
                         if (hit_prio_temp > hit_prio) {
                             hitter_deleted = true
                             hitter.ttl = 0 // del bullet in next prestep
@@ -172,8 +217,40 @@ export function collide() {
                 continue
             }
         }
-        if (hit_prio != colli_prio.NAH)
-            sprite_map.set(hitter_id, new_hitter)
+        sprite_map.set(hitter_id, new_hitter)
+    }
+}
+
+// handle objects and relationships
+export function prestep() {
+    for (const [id, sprite] of sprite_map.entries()) {
+        switch (sprite.type) {
+        case "tank":
+            if (sprite.v_ang == 0) {
+                sprite.v_ang = (sprite.leftspin ^ sprite.rightspin) ?
+                    Constants.TANK_SPIN_V_ANG *
+                    (sprite.leftspin ? 1 : -1) : 0
+            }
+            if (sprite.v == 0) {
+                sprite.v = sprite.forward * Constants.TANK_V_FORWARD +
+                    sprite.backward * Constants.TANK_V_BACKWARD
+            }
+            if (sprite.fire) {
+                sprite.fire = false
+                if (sprite.num_bullets) {
+                    sprite.num_bullets -= 1
+                    newBullet(id)
+                }
+            }
+            break
+        case "bullet":
+            if (sprite.ttl <= 0) {
+                sprite_map.get(sprite.source).num_bullets += 1
+                sprite_map.delete(id)
+            }
+            break
+        default:
+        }
     }
 }
 
@@ -183,6 +260,10 @@ export function step() {
         switch (sprite.type) {
         case "tank":
             sprite.angle += sprite.v_ang
+            if (sprite.angle > 2 * Math.PI)
+                sprite.angle -= 2 * Math.PI
+            if (sprite.angle < 0)
+                sprite.angle += 2 * Math.PI
             sprite.x += sprite.v * Math.sin(sprite.angle)
             sprite.y += -sprite.v * Math.cos(sprite.angle)
             break

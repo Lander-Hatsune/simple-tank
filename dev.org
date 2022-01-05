@@ -34,19 +34,6 @@ Draw & render one frame.
 
 Forward 1 tick.
 
-** prestep
-
-handle objects and relationships
-
-- tank: set velocity and angle velocity by movement status code
-- bullet: ~ttl <= 0~ -> del
-
-** step
-
-move everything by its velocity.
-
-this is where the actual dynamics happen.
-
 ** collide
 
 (Static)
@@ -59,9 +46,33 @@ this is where the actual dynamics happen.
 
   - reset velocity (friction)
 
+    - random =v_ang=
+    - backward =v=
+
 - tank & bullet
 
   - del bullet
   - del tank
   - delayed game ending
+
+- for tank, clear =v= and =v_ang=
+
+** prestep
+
+handle objects and relationships
+
+- tank
+  
+  - if collide didn't give =v= and =v_ang=,
+    set velocity and angle velocity by movement status code
+  - else no action
+    
+- bullet: ~ttl <= 0~ -> del
+
+** step
+
+- move everything by its velocity.
+
+this is where the actual dynamics happen.
+
 

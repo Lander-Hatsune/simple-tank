@@ -7,26 +7,11 @@ export const bullet_list = []
 export let map_size = undefined
 
 export function genMap() {
-    /*
-    const map = [[[1, 1], [0, 1], [1, 1], [0, 1], [1, 1], [1, 0]],
-                 [[1, 0], [0, 1], [0, 0], [0, 1], [0, 0], [1, 0]],
-                 [[1, 1], [1, 0], [0, 1], [0, 1], [0, 0], [1, 0]],
-                 [[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0]],
-                 [[1, 0], [0, 1], [0, 0], [1, 0], [0, 0], [1, 0]],
-                 [[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 0]]]
-    */
     map_size = {
         height: 10 * 5,
         width: 10 * 5,
     }
-    /*
-    for (const [row, row_] of Object.entries(map)) {
-        for (const [col, block] of Object.entries(row_)) {
-            if (block[0]) newWall(row, col, "vert")
-            if (block[1]) newWall(row, col, "horiz")
-        }
-    }
-    */
+
     newWall(0, 0, 5, "vert")
     newWall(0, 2, 1, "vert")
     newWall(0, 4, 1, "vert")
@@ -54,8 +39,8 @@ export function newBullet(tank_id) {
         y: tank.y + -Math.cos(tank.angle) * (Constants.TANK_BODY_HEIGHT / 2 +
                                             Constants.BULLET_RADIUS),
         r: Constants.BULLET_RADIUS,
-        vx: Math.sin(tank.angle) * Constants.BULLET_VELOCITY,
-        vy: -Math.cos(tank.angle) * Constants.BULLET_VELOCITY,
+        vx: Math.sin(tank.angle) * Constants.BULLET_V,
+        vy: -Math.cos(tank.angle) * Constants.BULLET_V,
         type: "bullet",
         source: tank_id,
         ttl: Constants.BULLET_INIT_TTL,
