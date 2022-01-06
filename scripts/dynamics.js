@@ -91,6 +91,7 @@ export function collide() {
         if (non_hitter_list.includes(hitter.type))
             continue
 
+        // substitute new_hitter for hitter
         let new_hitter = {...hitter} // deepcopy
 
         if (new_hitter.type === "tank") {
@@ -256,7 +257,7 @@ export function collide() {
                         const hit_prio_temp = colli_prio.BULLET_TANK
                         if (hit_prio_temp > hit_prio) {
                             hitter_deleted = true
-                            hitter.ttl = 0 // del bullet in next prestep
+                            new_hitter.ttl = 0 // del bullet in next prestep
                             sprite_map.delete(hittee_id)
                             break
                         }
