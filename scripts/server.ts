@@ -1,7 +1,7 @@
 import { Status } from "./deps.ts"
 
-const server = Deno.listen({ port: 8080 })
-console.log("Server started at 8080")
+const server = Deno.listen({ port: 80 })
+console.log("Server started at 80")
 
 for await (const conn of server) {
     (async () => {
