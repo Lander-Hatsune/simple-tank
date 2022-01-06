@@ -9,11 +9,69 @@ import { add,
          scale,
          rot,
          trans,
+         clamp,
          tankBodyBox,
          tankPoly } from "./maths.js"
 import { sprite_map,
          newBullet } from "./objs.js"
 
+// handle objects and relationships
+export function prestep() {
+    for (const [id, sprite] of sprite_map.entries()) {
+        switch (sprite.type) {
+        case "tank":
+            if (sprite.v_ang == 0) {
+                sprite.v_ang = (sprite.leftspin ^ sprite.rightspin) ?
+                    Constants.TANK_SPIN_V_ANG *
+                    (sprite.leftspin ? 1 : -1) : 0
+            }
+            if (sprite.v == 0) {
+                sprite.v = sprite.forward * Constants.TANK_V_FORWARD +
+                    sprite.backward * Constants.TANK_V_BACKWARD
+            }
+            if (sprite.fire) {
+                sprite.fire = false
+                if (sprite.num_bullets) {
+                    sprite.num_bullets -= 1
+                    newBullet(id)
+                }
+            }
+            break
+        case "bullet":
+            if (sprite.ttl <= 0) {
+                sprite_map.get(sprite.source).num_bullets += 1
+                sprite_map.delete(id)
+            }
+            break
+        default:
+        }
+    }
+}
+
+// handle movements
+export function step() {
+    for (const [id, sprite] of sprite_map.entries()) {
+        switch (sprite.type) {
+        case "tank":
+            sprite.angle += sprite.v_ang
+            if (sprite.angle > 2 * Math.PI)
+                sprite.angle -= 2 * Math.PI
+            if (sprite.angle < 0)
+                sprite.angle += 2 * Math.PI
+            sprite.x += sprite.v * Math.sin(sprite.angle)
+            sprite.y += -sprite.v * Math.cos(sprite.angle)
+            break
+        case "bullet":
+            sprite.x += sprite.vx
+            sprite.y += sprite.vy
+            sprite.ttl -= 1
+            break
+        default:
+        }
+    }
+}
+
+// handle collision & fix problems
 const colli_prio = {
     NAH: -1,
 
@@ -26,7 +84,6 @@ const colli_prio = {
 
 const non_hitter_list = ["wall"]
 
-// handle collision & fix problems
 export function collide() {
     // walls, tanks, bullets
     // ex. bullet as hitter, wall as hittee
@@ -49,7 +106,6 @@ export function collide() {
             case "wall&tank":
                 let hit = false
                 let v_ang_dir = 0
-                let v_dir = 0
                 let fix = [0, 0]
                 const tank_poly = tankPoly(hitter)
                 for(let i = 1; i <= 8; i++) {
@@ -66,12 +122,10 @@ export function collide() {
                         fix[0] = hittee.x - Math.max(p[0], q[0])
                         if (hitter.angle > 0 &&
                             hitter.angle < Math.PI) { // tank front hit wall
-                            v_dir = -1
                             if (hitter.angle < Math.PI / 2)
                                 v_ang_dir = 1
                             else v_ang_dir = -1
                         } else {
-                            v_dir = 1
                             if (hitter.angle < 3 / 2 * Math.PI)
                                 v_ang_dir = 1
                             else v_ang_dir = -1
@@ -88,12 +142,10 @@ export function collide() {
                         fix[1] = hittee.y - Math.max(p[1], q[1])
                         if (hitter.angle > Math.PI / 2 &&
                             hitter.angle < 3 / 2 * Math.PI) {
-                            v_dir = -1
                             if (hitter.angle < Math.PI)
                                 v_ang_dir = 1
                             else v_ang_dir = -1
                         } else {
-                            v_dir = 1
                             if (hitter.angle < Math.PI / 2)
                                 v_ang_dir = -1
                             else v_ang_dir = 1
@@ -111,12 +163,10 @@ export function collide() {
                         fix[0] = hittee.x + hittee.w - Math.min(p[0], q[0])
                         if (hitter.angle > Math.PI &&
                             hitter.angle < 2 * Math.PI) {
-                            v_dir = -1
                             if (hitter.angle < 3 / 2 * Math.PI)
                                 v_ang_dir = 1
                             else v_ang_dir = -1
                         } else {
-                            v_dir = 1
                             if (hitter.angle < Math.PI / 2)
                                 v_ang_dir = 1
                             else v_ang_dir = -1
@@ -136,12 +186,10 @@ export function collide() {
                              hitter.angle < Math.PI / 2) ||
                             (hitter.angle > 3 / 2 * Math.PI &&
                              hitter.angle < 2 * Math.PI)) {
-                            v_dir = -1
                             if (hitter.angle < Math.PI)
                                 v_ang_dir = -1
                             else v_ang_dir = 1
                         } else {
-                            v_dir = 1
                             if (hitter.angle < Math.PI)
                                 v_ang_dir = 1
                             else v_ang_dir = -1
@@ -152,11 +200,14 @@ export function collide() {
                 if (hit) {
                     new_hitter.v_ang = v_ang_dir *
                         Constants.TANK_SPIN_V_ANG
-                    new_hitter.v = (v_dir > 0) ? Constants.TANK_V_FORWARD :
-                        Constants.TANK_V_BACKWARD
-                    new_hitter.v *= Constants.TANK_V_HIT_DECAY
-                    new_hitter.x += fix[0] + ((fix[0] < 0) ? -0.05 : 0.05)
-                    new_hitter.y += fix[1] + ((fix[1] < 0) ? -0.05 : 0.05)
+                    fix = clamp(fix, -Constants.TANK_EPS, 
+                                Constants.TANK_EPS)
+                    if (fix[0] != 0) 
+                        new_hitter.x += fix[0] +
+                        ((fix[0] < 0) ? -1 : 1) * Constants.TANK_EPS
+                    if (fix[1] != 0)
+                        new_hitter.y += fix[1] +
+                        ((fix[1] < 0) ? -1 : 1) * Constants.TANK_EPS
                 }
                 break
 
@@ -221,59 +272,4 @@ export function collide() {
     }
 }
 
-// handle objects and relationships
-export function prestep() {
-    for (const [id, sprite] of sprite_map.entries()) {
-        switch (sprite.type) {
-        case "tank":
-            if (sprite.v_ang == 0) {
-                sprite.v_ang = (sprite.leftspin ^ sprite.rightspin) ?
-                    Constants.TANK_SPIN_V_ANG *
-                    (sprite.leftspin ? 1 : -1) : 0
-            }
-            if (sprite.v == 0) {
-                sprite.v = sprite.forward * Constants.TANK_V_FORWARD +
-                    sprite.backward * Constants.TANK_V_BACKWARD
-            }
-            if (sprite.fire) {
-                sprite.fire = false
-                if (sprite.num_bullets) {
-                    sprite.num_bullets -= 1
-                    newBullet(id)
-                }
-            }
-            break
-        case "bullet":
-            if (sprite.ttl <= 0) {
-                sprite_map.get(sprite.source).num_bullets += 1
-                sprite_map.delete(id)
-            }
-            break
-        default:
-        }
-    }
-}
-
-// handle movements
-export function step() {
-    for (const [id, sprite] of sprite_map.entries()) {
-        switch (sprite.type) {
-        case "tank":
-            sprite.angle += sprite.v_ang
-            if (sprite.angle > 2 * Math.PI)
-                sprite.angle -= 2 * Math.PI
-            if (sprite.angle < 0)
-                sprite.angle += 2 * Math.PI
-            sprite.x += sprite.v * Math.sin(sprite.angle)
-            sprite.y += -sprite.v * Math.cos(sprite.angle)
-            break
-        case "bullet":
-            sprite.x += sprite.vx
-            sprite.y += sprite.vy
-            sprite.ttl -= 1
-            break
-        default:
-        }
-    }
-}
 

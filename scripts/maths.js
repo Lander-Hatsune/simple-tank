@@ -26,6 +26,13 @@ export const rot = (vec, angle) =>
 
 export const trans = (vec, x, y) => [vec[0] + x, vec[1] + y]
 
+export const clamp = (vec, m, M) => {
+    for (let i = 0; i < vec.length; i += 1) {
+        vec[i] = Math.max(Math.min(vec[i], M), m)
+    }
+    return vec
+}
+
 export const rotAndTransPoly = (poly, angle, x, y) => {
     for (let i = 0; i < poly.length; i += 1) {
         poly[i] = trans(rot(poly[i], angle), x, y)

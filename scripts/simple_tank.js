@@ -16,9 +16,9 @@ function blit() {
 }
 
 function refresh() {
-    collide()
     prestep()
     step()
+    collide()
 }
 
 (function main() {
