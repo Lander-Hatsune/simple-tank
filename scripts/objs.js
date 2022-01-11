@@ -1,5 +1,7 @@
 import { Constants,
-         randHash } from "./commons.js"
+         randHash,
+         MapSize } from "./commons.js"
+import { randInt } from "./maths.js"
 
 export const sprite_map = new Map()
 export const tank_list = []
@@ -8,26 +10,60 @@ export let map_size = undefined
 
 export function genMap() {
     map_size = {
-        height: 10 * 5,
-        width: 10 * 5,
+        height: randInt(MapSize.MINL, MapSize.MAXL + 1),
+        width: randInt(MapSize.MINL, MapSize.MAXL + 1)
     }
 
-    newWall(0, 0, 5, "vert")
-    newWall(0, 2, 1, "vert")
-    newWall(0, 4, 1, "vert")
-    newWall(0, 5, 5, "vert")
-    newWall(2, 1, 2, "vert")
-    newWall(3, 2, 1, "vert")
-    newWall(3, 3, 2, "vert")
-    newWall(3, 4, 1, "vert")
+    // border
+    console.log(map_size)
+    newWall(0, 0, map_size.height, "vert")
+    newWall(0, map_size.width, map_size.height, "vert")
+    newWall(0, 0, map_size.width, "horiz")
+    newWall(map_size.height, 0, map_size.width, "horiz")
 
-    newWall(0, 0, 5, "horiz")
-    newWall(1, 1, 1, "horiz")
-    newWall(1, 3, 1, "horiz")
-    newWall(2, 0, 1, "horiz")
-    newWall(2, 2, 2, "horiz")
-    newWall(4, 1, 1, "horiz")
-    newWall(5, 0, 5, "horiz")
+    // vert walls: (height) per col, (width - 1) cols
+    for (let col = 1; col < map_size.width; col++) {
+        let walls_enc = randInt(2 ** (map_size.height))
+        let row = 0
+        let span = 0
+        while (walls_enc) {
+            let bit = walls_enc & 1
+            if (bit) {
+                span += 1
+            } else {
+                if (span > 0) {
+                    newWall(row, col, span, "vert")
+                    row += span
+                } else {
+                    row += 1
+                }
+                span = 0
+            }
+            walls_enc >>= 1
+        }
+    }
+
+    // horiz walls: (width) per row, (height - 1) rows
+    for (let row = 1; row < map_size.height; row++) {
+        let walls_enc = randInt(2 ** (map_size.width))
+        let col = 0
+        let span = 0
+        while(walls_enc) {
+            let bit = walls_enc & 1
+            if (bit) {
+                span += 1
+            } else {
+                if (span > 0) {
+                    newWall(row, col, span, "horiz")
+                    col += span
+                } else {
+                    col += 1
+                }
+                span = 0
+            }
+            walls_enc >>= 1
+        }
+    }
 }
 
 export function newBullet(tank_id) {
@@ -54,8 +90,10 @@ export function newTank(src) {
     img.src = src
     const tank = {
         id: randHash(),
-        x: Math.floor(Math.random() * (map_size.width) / Constants.BLOCK_SIZE) * 10 + Constants.BLOCK_SIZE / 2,
-        y: Math.floor(Math.random() * (map_size.height) / Constants.BLOCK_SIZE) * 10 + Constants.BLOCK_SIZE / 2,
+        x: randInt(map_size.width) * Constants.BLOCK_SIZE +
+            Constants.BLOCK_SIZE / 2,
+        y: randInt(map_size.height) * Constants.BLOCK_SIZE +
+            Constants.BLOCK_SIZE / 2,
         v: 0,
         angle: Math.random() * 2 * Math.PI,
         v_ang: 0,

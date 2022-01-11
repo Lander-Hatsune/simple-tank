@@ -20,6 +20,11 @@ export const Display = {
     CANVAS_PADDING: 50,
 }
 
+export const MapSize = {
+    MINL: 4,
+    MAXL: 7,
+}
+
 export const Constants = {
     EPS: 0.001,
     BLOCK_SIZE: 10.0,

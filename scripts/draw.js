@@ -26,15 +26,21 @@ let scale = undefined
 export function initCanvas() {
     cvs.width = Display.CANVAS_WIDTH
     cvs.height = Display.CANVAS_HEIGHT
-    scale = (Display.CANVAS_HEIGHT -
-             Display.CANVAS_PADDING * 2) / map_size.height
+    scale = Math.min((Display.CANVAS_HEIGHT -
+                      Display.CANVAS_PADDING * 2) /
+                     (map_size.height * Constants.BLOCK_SIZE),
+                     (Display.CANVAS_WIDTH -
+                      Display.CANVAS_PADDING * 2) /
+                     (map_size.width * Constants.BLOCK_SIZE))
 }
 
 export function blitMap() {
     ctx.setTransform(1, 0, 0, 1, 0, 0)
     ctx.clearRect(0, 0, Display.CANVAS_WIDTH, Display.CANVAS_HEIGHT)
     ctx.translate(Display.CANVAS_PADDING, Display.CANVAS_PADDING)
-    drawRect(0, 0, map_size.height * scale, map_size.width * scale,
+    drawRect(0, 0,
+             map_size.width * Constants.BLOCK_SIZE * scale,
+             map_size.height * Constants.BLOCK_SIZE * scale,
              Colors.background)
 }
 

@@ -1,5 +1,13 @@
 import { Constants } from "./commons.js"
 
+export const randInt = (min, max) => {
+    if (!max) {
+        max = min
+        min = 0
+    }
+    return min + Math.floor(Math.random() * (max - min))
+}
+
 export const norm = (vec) => scale(vec, 1 / squaredLen(vec))
 
 export const add = (vec1, vec2) => [vec1[0] + vec2[0],
