@@ -1,6 +1,6 @@
 # simple-tank
 
-[try it out!](47.93.5.8)
+[try it out!](http://47.93.5.8:8080)
 
 ![](screenshots/ex.png)
 
