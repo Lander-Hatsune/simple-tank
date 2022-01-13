@@ -71,9 +71,9 @@ export function newBullet(tank_id) {
     const bullet = {
         id: randHash(),
         x: tank.x + Math.sin(tank.angle) * (Constants.TANK_BODY_HEIGHT / 2 +
-                                            Constants.BULLET_RADIUS),
+                                            2 * Constants.BULLET_RADIUS),
         y: tank.y + -Math.cos(tank.angle) * (Constants.TANK_BODY_HEIGHT / 2 +
-                                            Constants.BULLET_RADIUS),
+                                            2 * Constants.BULLET_RADIUS),
         r: Constants.BULLET_RADIUS,
         vx: Math.sin(tank.angle) * Constants.BULLET_V,
         vy: -Math.cos(tank.angle) * Constants.BULLET_V,

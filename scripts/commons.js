@@ -21,8 +21,8 @@ export const Display = {
 }
 
 export const MapSize = {
-    MINL: 4,
-    MAXL: 7,
+    MINL: 5,
+    MAXL: 9,
 }
 
 export const Constants = {
