@@ -1,4 +1,6 @@
-import { Status } from "./deps.ts"
+import { Status,
+         serve,
+         ServerRequest } from "https://deno.land/std@0.100.0/http/mod.ts"
 
 const server = Deno.listen({ port: 8080 })
 console.log("Server started at 8080")
@@ -6,8 +8,16 @@ console.log("Server started at 8080")
 for await (const conn of server) {
     (async () => {
         const httpConn = Deno.serveHttp(conn)
-        for await (const requestEvent of httpConn) {
-            handleRequest(requestEvent)
+        while (true) {
+            try {
+                const requestEvent = await httpConn.nextRequest()
+                if (requestEvent === null) {
+                    return
+                }
+                handleRequest(requestEvent)
+            } catch (error) {
+                console.log(error)
+            }
         }
     })()
 }
