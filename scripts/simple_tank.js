@@ -4,8 +4,8 @@ import { initCanvas,
          drawSprites,
        } from "./draw.js"
 import { sprite_map,
-         genMap,
-         newTank } from "./objs.js"
+         newTank,
+         initMap } from "./objs.js"
 import { prestep,
          step,
          collide } from "./dynamics.js"
@@ -22,7 +22,7 @@ function refresh() {
 }
 
 (function main() {
-    genMap()
+    initMap()
     initCanvas()
 
     const tank1_id = newTank("assets/tank1.png")
