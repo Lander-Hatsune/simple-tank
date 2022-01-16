@@ -7,6 +7,7 @@
 Rewrite of TankTrouble2, a lovely flash game, gone along with flash.
 
 - using [Deno](https://deno.land/) as web server, no other 3rd-party libs
+- using [mini.css](https://minicss.org/)
 - written in pure javascript
 - physics engine from scratch
 
@@ -16,5 +17,7 @@ Rewrite of TankTrouble2, a lovely flash game, gone along with flash.
 - TankTrouble2 theme
 
     ![](screenshots/TankTrouble2.png)
+    
+- [Collision Detection](https://www.jeffreythompson.org/collision-detection/) tutorial by Jeff Thompson
 
 
