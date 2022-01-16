@@ -15,8 +15,8 @@
 export const Display = {
     FPS: 60,
     TPS: 200, // ticks per second
-    CANVAS_WIDTH: 1080,
-    CANVAS_HEIGHT: 1080,
+    CANVAS_WIDTH: 960,
+    CANVAS_HEIGHT: 960,
     CANVAS_PADDING: 50,
 }
 
@@ -37,7 +37,7 @@ export const Constants = {
     TANK_HEIGHT: 5.5,
     TANK_BARREL_WIDTH: 0.75,
     TANK_BARREL_HEIGHT: 1.0,
-    TANK_HEIGHT_BIAS: 3.25,
+    TANK_HEIGHT_BIAS: 3.25, // pivot to barrels' tip
     TANK_BODY_HEIGHT: 4.5,
     TANK_V_FORWARD: 20 / Display.TPS,
     TANK_V_BACKWARD: -12.5 / Display.TPS,

@@ -5,13 +5,19 @@ import { randInt } from "./maths.js"
 import { genMap,
          validateMap } from "./map.js"
 
-export const sprite_map = new Map()
-export const tank_list = []
-export const bullet_list = []
-export let map_size = undefined
+export let sprite_map = new Map()
+export let winner_id
+export let map_size
 let regions, max_c
 
+export function setWinner(id) {
+    winner_id = id
+}
+
 export function initMap() {
+    sprite_map = new Map()
+    setWinner(false)
+    
     map_size = {
         height: randInt(MapSize.MINL, MapSize.MAXL + 1),
         width: randInt(MapSize.MINL, MapSize.MAXL + 1)

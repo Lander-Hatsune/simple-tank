@@ -76,6 +76,18 @@ async function handleRequest(request: Deno.RequestEvent) {
                             }
                         )
                     )
+                } else if (/css\/.*css/.test(pathname)) {
+                    request.respondWith(
+                        new Response (
+                            await Deno.readFile('.' + pathname),
+                            {
+                                status: Status.OK,
+                                headers: {
+                                    "content-type": "text/css"
+                                },
+                            }
+                        )
+                    )
                 } else {
                     request.respondWith(
                         new Response ("Path Not accessible",

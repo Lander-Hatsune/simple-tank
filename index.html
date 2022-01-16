@@ -2,10 +2,43 @@
 <html lang="zh_CN">
   <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://minicss.org/flavorFiles/mini-nord.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SimpleTank</title>
   </head>
   <body>
-    <canvas id="cvs"></canvas>
-    <script src="/scripts/simple_tank.js" type="module"></script>
+    <main class="container">
+      <div class="row">
+        <div class="col">
+          <canvas id="cvs"></canvas>
+          <script src="/scripts/simple_tank.js" type="module"></script>
+        </div>
+        <div class="col" style="margin:50px">
+          <h1>Simple Tank</h1>
+          <p>Personal rewrite of TankTrouble2, a lovely Flash game,
+            whose latest version is now
+            <a href="https://tanktrouble.com/">here</a>.</p>
+          <p>This project is open source on <a href="https://github.com/Lander-Hatsune/simple-tank">Github</a>.</p>
+          <h1>Tips</h1>
+          <ul>
+            <li><mark class="secondary">Player 1</mark>: Use
+              <mark>Q</mark> to shoot and <mark>ESDF</mark> to move</li>
+            <li><mark class="tertiary">Player 2</mark>: Use
+              <mark>M</mark> to shoot and <mark>direction keys</mark> to move</li>
+          </ul>
+          <div>
+            <h1>ScoreBoard</h1>
+            <div class="row">
+              <div class="col-sm">
+                <mark class="secondary">Player 1</mark><h2 id="player1">0</h2>
+              </div>
+              <div class="col-sm">
+                <mark class="tertiary">Player 2</mark><h2 id="player2">0</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </body>
 </html>

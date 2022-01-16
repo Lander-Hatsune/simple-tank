@@ -12,14 +12,17 @@ import { add,
          clamp,
          tankBodyBox,
          tankPoly } from "./maths.js"
-import { sprite_map,
+import { setWinner,
+         sprite_map,
          newBullet } from "./objs.js"
 
 // handle objects and relationships
 export function prestep() {
+    let tank_ids = []
     for (const [id, sprite] of sprite_map.entries()) {
         switch (sprite.type) {
         case "tank":
+            tank_ids.push(id)
             if (sprite.v_ang == 0) {
                 sprite.v_ang = (sprite.leftspin ^ sprite.rightspin) ?
                     Constants.TANK_SPIN_V_ANG *
@@ -46,6 +49,8 @@ export function prestep() {
         default:
         }
     }
+    if (tank_ids.length < 2)
+        setWinner(tank_ids[0])
 }
 
 // handle movements

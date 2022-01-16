@@ -4,7 +4,8 @@ import { Colors } from "./colors.js"
 import { sprite_map,
          map_size } from "./objs.js"
 
-
+const score_p1 = document.getElementById("player1")
+const score_p2 = document.getElementById("player2")
 const cvs = document.getElementById("cvs")
 const ctx = cvs.getContext("2d")
 
@@ -21,7 +22,15 @@ function drawCircle(x_, y_, r_, c) {
     ctx.fill()
 }
 
-let scale = undefined
+export function incScore(p) {
+    if (p == 1) {
+        score_p1.textContent = Number(score_p1.textContent) + 1
+    } else {
+        score_p2.textContent = Number(score_p2.textContent) + 1
+    }
+}
+
+let scale
 
 export function initCanvas() {
     cvs.width = Display.CANVAS_WIDTH
