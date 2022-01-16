@@ -42,7 +42,8 @@ export function prestep() {
             break
         case "bullet":
             if (sprite.ttl <= 0) {
-                sprite_map.get(sprite.source).num_bullets += 1
+                if (sprite_map.get(sprite.source))
+                    sprite_map.get(sprite.source).num_bullets += 1
                 sprite_map.delete(id)
             }
             break
